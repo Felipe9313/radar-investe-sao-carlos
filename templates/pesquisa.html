@@ -1,0 +1,45 @@
+PREFEITURA DE SÃO CARLOS
+Pesquisar oportunidades
+Consulte todos os programas e recursos monitorados pelo Radar.
+
+← Voltar ao painel
+PESQUISA
+Encontre oportunidades por finalidade e área
+A pesquisa mostra recursos para Prefeitura e, quando necessário, programas para empresas e startups da cidade.
+
+Resultados {{ oportunidades|length }}
+Para Prefeitura {{ total_prefeitura }}
+Empresas / Startups {{ total_empresas }}
+Valor identificado R$ {{ "{:,.2f}".format(total_valor).replace(",", "X").replace(".", ",").replace("X", ".") }}
+Palavra-chave
+🔎 
+{{ q }}
+Finalidade 
+Todos
+ Natureza 
+Todos
+ Área 
+Todos
+ Público 
+Todos
+ Tipo 
+Todos
+Pesquisar Limpar filtros
+{% for o in oportunidades %}
+{{ o.area }} {{ o.fonte or o.orgao }} {% if o.publico == "Prefeitura" %} 🏛 Prefeitura {% endif %}
+{{ o.nome }}
+{{ o.orgao }}
+{{ o.status }}
+Valor {% if o.valor %} R$ {{ "{:,.2f}".format(o.valor).replace(",", "X").replace(".", ",").replace("X", ".") }} {% else %} Não informado {% endif %}
+Prazo {% if o.data_final %} {{ o.data_final[8:10] }}/{{ o.data_final[5:7] }}/{{ o.data_final[0:4] }} {% else %} {{ o.prazo_texto or "Sem data" }} {% endif %} {% if o.dias is not none %} {{ o.dias }} dias restantes {% endif %}
+Público {{ o.publico }}
+Tipo {{ o.tipo_oportunidade or "Não informado" }}
+{% if o.motivo_sao_carlos %}
+Por que interessa a São Carlos: {{ o.motivo_sao_carlos }}
+{% endif %}
+{% if o.link %} Abrir oportunidade {% endif %} {% if o.publico == "Prefeitura" and not (o.tipo_oportunidade or "").startswith("Financiamento") %}
+Gestão da captação
+{% endif %}
+{% else %}
+Nenhuma oportunidade encontrada. Tente alterar os filtros ou remover a palavra-chave.
+{% endfor %}
