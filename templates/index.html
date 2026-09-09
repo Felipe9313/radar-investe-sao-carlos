@@ -1,0 +1,124 @@
+PREFEITURA DE SÃO CARLOS
+Radar Investe São Carlos
+Captação municipal e oportunidades para o desenvolvimento econômico.
+
+{% if ultima_atualizacao %}
+Última atualização: {{ ultima_atualizacao[8:10] }}/{{ ultima_atualizacao[5:7] }}/{{ ultima_atualizacao[0:4] }} às {{ ultima_atualizacao[11:16] }}
+{% endif %}
+🔎 Pesquisar oportunidades
+↻ Atualizar fontes
+{% if msg %}
+{{ msg }}
+{% endif %}
+PRIORIDADE
+Dinheiro e programas para a Prefeitura
+O painel prioriza repasses, convênios, programas e equipamentos em que São Carlos possa participar diretamente.
+
+Programas Transferegov Dados abertos Novo PAC
+⚙ Automação federal Novo PAC: automático · Transferências Especiais: API automática · Programas discricionários: consulta oficial até a nova API de Atos Preparatórios ficar disponível.
+Repasse / apoio Prefeitura {{ total_prefeitura }} Valor identificado: R$ {{ "{:,.2f}".format(valor_prefeitura).replace(",", "X").replace(".", ",").replace("X", ".") }}
+Financiamentos Prefeitura {{ total_financiamento_prefeitura }} Crédito reembolsável, separado dos repasses.
+Empresas de São Carlos {{ total_empresas }} Consulta secundária para as diretorias.
+Resultados nesta tela {{ oportunidades|length }} Conforme os filtros selecionados.
+CAPTAÇÃO MUNICIPAL POR EIXO
+Onde a Prefeitura quer buscar recursos
+Aqui entram somente oportunidades em que a Prefeitura pode participar.
+🛍
+Comércio {{ resumo_eixos["Comércio"]["total"] }} {% if resumo_eixos["Comércio"]["valor"] %} R$ {{ "{:,.2f}".format(resumo_eixos["Comércio"]["valor"]).replace(",", "X").replace(".", ",").replace("X", ".") }} {% else %} Nenhum valor aberto confirmado {% endif %}
+🏭
+Indústria {{ resumo_eixos["Indústria"]["total"] }} {% if resumo_eixos["Indústria"]["valor"] %} R$ {{ "{:,.2f}".format(resumo_eixos["Indústria"]["valor"]).replace(",", "X").replace(".", ",").replace("X", ".") }} {% else %} Nenhum valor aberto confirmado {% endif %}
+🚀
+Startup / Inovação {{ resumo_eixos["Startup/Inovação"]["total"] }} {% if resumo_eixos["Startup/Inovação"]["valor"] %} R$ {{ "{:,.2f}".format(resumo_eixos["Startup/Inovação"]["valor"]).replace(",", "X").replace(".", ",").replace("X", ".") }} {% else %} Nenhum valor aberto confirmado {% endif %}
+PRAZOS
+Próximos 15 dias
+{{ proximos_prazos|length }}
+{% if proximos_prazos %}
+{% for o in proximos_prazos %}
+{{ o.nome }} {{ o.fonte or o.orgao }}
+{{ o.dias_restantes }} dias
+{% endfor %}
+{% else %}
+Nenhum prazo crítico nos próximos 15 dias.
+{% endif %}
+GESTÃO
+Pendências de captação
+{{ pendencias|length }}
+{% if pendencias %}
+{% for o in pendencias %}
+{{ o.nome }} {{ o.status_captacao or "Encontrada" }} {% if not o.responsavel_captacao %} · sem responsável{% endif %}
+{{ o.area }}
+{% endfor %}
+{% else %}
+Nenhuma pendência municipal no momento.
+{% endif %}
+META ANUAL
+Meta de captação da Prefeitura
+Editar meta
+Meta anual R$ {{ "{:,.2f}".format(meta_anual).replace(",", "X").replace(".", ",").replace("X", ".") }}
+Em análise R$ {{ "{:,.2f}".format(valor_em_analise).replace(",", "X").replace(".", ",").replace("X", ".") }}
+Enviado R$ {{ "{:,.2f}".format(valor_enviado).replace(",", "X").replace(".", ",").replace("X", ".") }}
+Aprovado R$ {{ "{:,.2f}".format(valor_aprovado).replace(",", "X").replace(".", ",").replace("X", ".") }}
+{{ percentual_meta }}% da meta aprovada
+CAPTAÇÃO
+Prioridades para São Carlos
+{% if ranking_prefeitura %}
+{% for item in ranking_prefeitura %}
+{{ loop.index }}
+Prefeitura Nota {{ item.prioridade.score }}/100
+{{ item.oportunidade.nome }} {{ item.oportunidade.fonte or item.oportunidade.orgao }} {% if item.prioridade.projeto %}
+↳ {{ item.prioridade.projeto.nome }}
+{% endif %}
+{% if item.oportunidade.link %} Abrir {% endif %}
+{% endfor %}
+{% else %}
+Nenhum repasse aberto confirmado agora. Os programas em acompanhamento aparecem logo abaixo.
+{% endif %}
+ACOMPANHAMENTO
+Funil de captação
+Encontrada{{ contagem_funil["Encontrada"] }}
+Analisar{{ contagem_funil["Analisar edital"] }}
+Preparar{{ contagem_funil["Preparar proposta"] }}
+Enviada{{ contagem_funil["Inscrição enviada"] }}
+Aguardando{{ contagem_funil["Aguardando resultado"] }}
+Aprovada{{ contagem_funil["Aprovada"] }}
+Somente captações diretas da Prefeitura entram neste funil.
+
+PROJETOS MUNICIPAIS
+Projetos buscando recursos
++ Cadastrar projeto
+{% for projeto in projetos_prefeitura %}
+Projeto da Prefeitura
+{{ projeto.nome }}
+{{ projeto.status }}
+Área{{ projeto.area }}
+Valor estimado {% if projeto.valor_estimado %} R$ {{ "{:,.2f}".format(projeto.valor_estimado).replace(",", "X").replace(".", ",").replace("X", ".") }} {% else %}A definir{% endif %}
+Responsável{{ projeto.responsavel or "A definir" }}
+{{ projeto.descricao }}
+
+{% if projeto.fontes_monitoradas %}
+{% for fonte in projeto.fontes_monitoradas.split(";") %} {{ fonte.strip() }} {% endfor %}
+{% endif %} {% set vinculos = vinculos_projetos.get(projeto.id, []) %}
+Oportunidades compatíveis {% if vinculos %} {% for v in vinculos %}
+{{ v.oportunidade.nome }} {% if v.oportunidade.link %} Abrir {% endif %}
+{% endfor %} {% else %} Nenhuma oportunidade aberta compatível nesta atualização. {% endif %}
+{% endfor %}
+MONITORAMENTO ESTRATÉGICO
+Programas que podem virar captação
+Não entram no contador de oportunidades abertas.
+
+{% for item in fontes_estrategicas %}
+{{ item.categoria }} {{ item.area }}
+{{ item.nome }}
+{{ item.orgao }}
+{{ item.status }}
+{% if item.projeto_relacionado %}
+↳ {{ item.projeto_relacionado }}
+{% endif %}
+Ver detalhes
+Fonte oficial
+{% endfor %}
+CONSULTA COMPLETA
+Quer pesquisar todas as oportunidades?
+Use a página de pesquisa para filtrar por Prefeitura, empresas, área, tipo de recurso, prazo e palavras-chave.
+
+🔎 Abrir pesquisa
